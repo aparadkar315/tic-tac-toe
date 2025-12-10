@@ -6,15 +6,20 @@ const gameBoard = (function(){
     for(let i = 0; i < rows; i++){
         board[i] = [];
         for(let j = 0; j < columns; j++){
-            board[i].push(Cell());
+            board[i].push(cell());
         }
     }
     return {board};
 })();
 
 
-function players(){
-    const playerInfo = [
+function cell(){
+    const value = "";
+    return value;
+}
+
+function gameController(){
+    const players = [
         {
             playerOneName : "Player1",
             token : "X"
@@ -23,13 +28,39 @@ function players(){
             playerTwoName : "Player2",
             token : "O"
         }
-    ]
-    return {playerInfo};
+    ];
+
+
+    let activePlayer;
+
+    const switchPlayerTurn = () => {
+
+        if(activePlayer === players[0]){
+            activePlayer = players[1];
+        }else{
+            activePlayer = players[0];
+        }
+        return activePlayer;
+};
+    
+    return {switchPlayerTurn};
 }
 
-//function gameControl() {
-//    gameBoard.board;
-//    } 
+let activePlayer  = gameController();
+
+
+console.log(gameBoard);
+console.log(activePlayer.switchPlayerTurn());
+console.log(activePlayer.switchPlayerTurn());
+console.log(activePlayer.switchPlayerTurn());
+console.log(activePlayer.switchPlayerTurn());
+
+
+function displayController(){
+
+}
+
+
 
 
 
