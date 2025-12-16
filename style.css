@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.container {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 300px;
+    width: 300px;
+    border: 2px solid black;
+
+}
+
+.box {
+    background-color: aqua;
+}
+
+#start {
+    height: 30px;
+    width: 100px;
+}
+
+#game {
+    display: flex;
+    
+    height: 40vh;
+    width: 40vw;
+    border: 2px solid black;
+}
