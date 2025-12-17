@@ -129,32 +129,60 @@ function playGame() {
     function domLogic(){
         
         //let updatedBoard = displayer.getBoard();
+        const game = document.querySelector("#game");
+        const container = document.createElement("div");
+        container.classList.add("container");
+        game.appendChild(container);
+        let result = document.createElement("div");
+        result.classList.add("result");
+        game.appendChild(result);
 
         const mapBoardToDom = (updatedBoard) => {
-            const game = document.querySelector("#game");
             
-            const container = document.createElement("div");
-            container.classList.add("container");
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     let box = document.createElement("div");
                     box.classList.add("box");
+                    box.dataset.row = i;
+                    box.dataset.column = j;
                     box.textContent = updatedBoard[i][j];
+                    if(updatedBoard[i][j] === ""){
+                        placeMarker(box,updatedBoard);
+                    }
                     container.appendChild(box);  
                 }
             }
-                game.appendChild(container);
+                
         };
+
+        const placeMarker = (box,updatedBoard) => {
+                box.addEventListener("click", () => {
+                        //updatedBoard[box.dataset.row][box.dataset.column] = "X";
+                        //box.textContent = updatedBoard[box.dataset.row][box.dataset.column];
+                        updatedBoard = displayer.getBoard(displayResult,box.dataset.row,box.dataset.column);
+                        box.textContent = updatedBoard[box.dataset.row][box.dataset.column];
+                        resultDisplayer(updatedBoard);
+                    })
+            }
+
+        const resultDisplayer = (updateBoard) => {
+            
+            displayResult = displayer.getResult(displayResult,updatedBoard);
+            result.textContent = displayResult;
+        }    
 
         return{mapBoardToDom};
     }
         
 
-    const dom = domLogic();
+    function createBoard() {
+        const dom = domLogic();
+        dom.mapBoardToDom(updatedBoard);
+    }
     
 
-    const start = document.querySelector("#start");
-    start.addEventListener("click", dom.mapBoardToDom(updatedBoard));
+    const startGame = document.querySelector("#start");
+    startGame.addEventListener("click", createBoard);
 
 
 
@@ -182,7 +210,7 @@ function playGame() {
 
 
 
-
+/*
 
 updatedBoard = displayer.getBoard(displayResult,0,0);
 console.log(updatedBoard);
@@ -227,7 +255,7 @@ console.log(displayResult);
 updatedBoard = displayer.getBoard(displayResult,2,1);
 console.log(updatedBoard);
 displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
+console.log(displayResult);*/
 
 
 
