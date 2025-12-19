@@ -3,7 +3,15 @@ const players = playerObj.players;
 
 
 let displayer = display();
-let displayResult = "Next players turn.";
+let displayResult = "Player 1's Turn.";
+
+const game = document.querySelector("#game");
+
+const startGame = document.createElement("button");
+startGame.id = "start";
+startGame.textContent = "START GAME";
+game.appendChild(startGame);
+startGame.addEventListener("click", createBoard,{once: true});
 
 
 const gameBoard = (function(){
@@ -82,18 +90,19 @@ function playGame() {
 
         const getBoard = (displayResult, x, y) => {
             //condition to stop play after a result.
-            if(displayResult !== "Next players turn."){ 
+            if(displayResult !== "Player 1's Turn." && displayResult !== "Player 2's Turn."){ 
                 updatedBoard = updatedBoard;
             }else{
                 updatedBoard = game.updateBoard(x,y);
             }
             
             return updatedBoard;
-        }
+        };
+
             
         const getResult = (displayResult,updatedBoard) => {
 
-         if(displayResult === "Next players turn."){
+         if(displayResult === "Player 1's Turn." || displayResult === "Player 2's Turn."){
                 count++;
 
             if(updatedBoard[0][0] === updatedBoard[0][1] && updatedBoard[0][1] === updatedBoard[0][2] && updatedBoard[0][2]||
@@ -112,15 +121,29 @@ function playGame() {
                         }
                 } else if(count === 9) {
                         return "Its a draw!";
-                        } else {
-                            return "Next players turn."
+                        } else if(isCountEven(count)){
+                            return "Player 1's Turn.";
+                            }else{
+                                return "Player 2's Turn.";
                             }
                 
             } else {
                 return displayResult;
                 } 
         };
-        return {getBoard, getResult};
+
+        const clearDisplay = () => {
+            for(let i = 0; i < 3; i++){
+                for(let j = 0; j < 3; j++){
+                    updatedBoard[i][j] = "";
+                }
+            }
+            displayResult = "Player 1's Turn.";
+            count = 0;
+            newBoard();
+        };
+
+        return {getBoard, getResult, clearDisplay};
     }
 
     
@@ -128,12 +151,19 @@ function playGame() {
 
     function domLogic(){
         
-        //let updatedBoard = displayer.getBoard();
-        const game = document.querySelector("#game");
+        let count = 0;
+        const restart = document.createElement("button");
+        restart.id = "restart";
+        restart.textContent = "RESTART GAME";
+        game.appendChild(restart);
+        restart.addEventListener("click", displayer.clearDisplay);
+
         const container = document.createElement("div");
         container.classList.add("container");
         game.appendChild(container);
+
         let result = document.createElement("div");
+        result.textContent = "Player 1's Turn."
         result.classList.add("result");
         game.appendChild(result);
 
@@ -141,13 +171,20 @@ function playGame() {
             
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
+                    count++;
                     let box = document.createElement("div");
                     box.classList.add("box");
                     box.dataset.row = i;
                     box.dataset.column = j;
                     box.textContent = updatedBoard[i][j];
+                    if(isCountEven(count)){
+                        box.style.backgroundColor = "#FFFFFF";
+                    }else{
+                        box.style.backgroundColor = "#C0DBE2";
+                    }
+
                     if(updatedBoard[i][j] === ""){
-                        placeMarker(box,updatedBoard);
+                        placeMarker(box,updatedBoard,count);
                     }
                     container.appendChild(box);  
                 }
@@ -155,35 +192,67 @@ function playGame() {
                 
         };
 
-        const placeMarker = (box,updatedBoard) => {
+
+        const placeMarker = (box,updatedBoard,count) => {
+
                 box.addEventListener("click", () => {
-                        //updatedBoard[box.dataset.row][box.dataset.column] = "X";
-                        //box.textContent = updatedBoard[box.dataset.row][box.dataset.column];
+                        if(box.textContent === ""){
                         updatedBoard = displayer.getBoard(displayResult,box.dataset.row,box.dataset.column);
                         box.textContent = updatedBoard[box.dataset.row][box.dataset.column];
-                        resultDisplayer(updatedBoard);
-                    })
-            }
 
-        const resultDisplayer = (updateBoard) => {
-            
+                        if(box.textContent === "X"){
+                            box.setAttribute("style", "color: #DFE2DB; background-color: #354E61;");
+                        }else if(box.textContent === "O"){
+                            box.setAttribute("style", "color: #354E61; background-color: #538495;");
+                            }
+
+                        resultDisplayer(updatedBoard,count);
+                        }
+                    });
+
+            };
+
+
+        const resultDisplayer = (updatedBoard,count) => {
+
+            if(isCountEven(count)){
+                result.style.color = "#354E61";
+            }else{
+                result.style.color = "#538495";
+            }
+            updatedBoard = updatedBoard;
             displayResult = displayer.getResult(displayResult,updatedBoard);
             result.textContent = displayResult;
-        }    
+        };    
 
         return{mapBoardToDom};
-    }
-        
 
+    }
+     
+    
     function createBoard() {
         const dom = domLogic();
         dom.mapBoardToDom(updatedBoard);
+        game.removeChild(startGame);
+    }
+
+    function newBoard() {
+        game.innerHTML = "";
+        const dom = domLogic();
+        dom.mapBoardToDom(updatedBoard);
+    }
+
+    function isCountEven(count) {
+        if(count % 2 === 0){
+            return true;
+        }else 
+            {
+            return false;
+            }
     }
     
-
-    const startGame = document.querySelector("#start");
-    startGame.addEventListener("click", createBoard);
-
+    
+    
 
 
 
@@ -209,53 +278,6 @@ function playGame() {
 
 
 
-
-/*
-
-updatedBoard = displayer.getBoard(displayResult,0,0);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,1,1);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,2,2);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,1,2);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,1,0);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,2,0);
-console.log(updatedBoard);
-console.log(displayer.getResult(displayResult,updatedBoard));
-
-
-updatedBoard = displayer.getBoard(displayResult,0,2);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,0,1);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);
-
-updatedBoard = displayer.getBoard(displayResult,2,1);
-console.log(updatedBoard);
-displayResult = displayer.getResult(displayResult,updatedBoard);
-console.log(displayResult);*/
 
 
 
