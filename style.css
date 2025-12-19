@@ -10,15 +10,15 @@
     grid-template-columns: 1fr 1fr 1fr;
     height: 300px;
     width: 300px;
-    
-    
-
 }
 
-.box {
+.box, #game, .result {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.box {
     background-color:white;
     font-size: 2em;
     border: 1px solid green;
@@ -26,34 +26,27 @@
 
 }
 
-#start {
+#start, #restart {
     height: 50px;
     width: 300px;
-    margin-bottom: 20px;
     font-size: 2rem;
     border-radius: 10px;
-    background-color: green;
     color: white;
     border: none;
     font-weight: 900;
+}
+
+#start {
+    margin-bottom: 20px;
+    background-color: green;
 }
 
 #restart {
-    height: 50px;
-    width: 300px;
     margin-bottom: 50px;
-    font-size: 2rem;
-    border-radius: 10px;
-    border: none;
     background-color: #4f8676;
-    color: white;
-    font-weight: 900;
 }
 
 #game {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
     align-items: center;
     height: 100vh;
@@ -62,9 +55,6 @@
 }
 
 .result {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-top: 20px;
     color: #354E61;
     height: 50px;
